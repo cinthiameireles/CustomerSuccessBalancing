@@ -10,30 +10,30 @@ namespace CustomerSuccessBalancing
     {
         public int CustomerSuccessBalancing(List<CustomerSuccess> customerSuccess, List<Customer> customers, List<int> customerSuccessAway)
         {
-            List<CustomerSuccess> customerSuccessCopy = customerSuccess.OrderBy(item => item.Score).ToList();
-            List<Customer> customersCopy = customers.OrderBy(item => item.Score).ToList();
+            var customerSuccessOrdered = customerSuccess.OrderBy(item => item.Score).ToArray();
+            var customersOrdered = customers.OrderBy(item => item.Score).ToArray();
 
-            int idCsMostCostumer = 0, totalCustomersCsMostCustomer = 0, totalGeral = 0;
+            int idCsMostCostumers = 0, totalCustomersCsMostCustomers = 0, totalCustomersAnalyzed = 0;
 
-            for (int i = 0; i < customerSuccessCopy.Count; i++)
+            for (int i = 0; i < customerSuccessOrdered.Count(); i++)
             {
-                if (customerSuccessAway.Contains(customerSuccessCopy[i].Id)) continue;
+                if (customerSuccessAway.Contains(customerSuccessOrdered[i].Id)) continue;
 
                 int totalCustomer = 0;
-                for (int j = totalGeral; j < customersCopy.Count() && customersCopy[j].Score <= customerSuccessCopy[i].Score; j++, totalGeral++, totalCustomer++) ;
+                for (int j = totalCustomersAnalyzed; j < customersOrdered.Count() && customersOrdered[j].Score <= customerSuccessOrdered[i].Score; j++, totalCustomersAnalyzed++, totalCustomer++) ;
 
-                if (totalCustomer > totalCustomersCsMostCustomer)
+                if (totalCustomer > totalCustomersCsMostCustomers)
                 {
-                    totalCustomersCsMostCustomer = totalCustomer;
-                    idCsMostCostumer = customerSuccessCopy[i].Id;
+                    totalCustomersCsMostCustomers = totalCustomer;
+                    idCsMostCostumers = customerSuccessOrdered[i].Id;
                 }
-                else if (totalCustomer == totalCustomersCsMostCustomer)
+                else if (totalCustomer == totalCustomersCsMostCustomers)
                 {
-                    idCsMostCostumer = 0;
+                    idCsMostCostumers = 0;
                 }
             }
 
-            return idCsMostCostumer;
+            return idCsMostCostumers;
         }
     }
 }
