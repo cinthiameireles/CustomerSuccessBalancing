@@ -8,9 +8,13 @@ namespace CustomerSuccessBalancing
 {
     public class CustomerSuccess
     {
-        public int CustomerSuccessBalancing(List<CustomerInfo> customerSuccess, List<CustomerInfo> costumers, List<int> costumerSuccessAway)
+        public int Id { get; set; }
+        public int Score { get; set; }
+
+        public CustomerSuccess(int id, int score)
         {
-            throw new NotImplementedException();
+            Id = id;
+            Score = score;
         }
     }
 }
