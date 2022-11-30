@@ -10,18 +10,30 @@ namespace CustomerSuccessBalancing
     {
         public int CustomerSuccessBalancing(List<CustomerSuccess> customerSuccess, List<Customer> customers, List<int> customerSuccessAway)
         {
-            List<CustomerSuccess> csAvailable = customerSuccess.Where(csItem => !customerSuccessAway.Contains(csItem.Id)).OrderBy(csItem => csItem.Score).ToList();
-            var csMostCostumers = new { IdCs = 0, TotalCustomers = 0 };
+            List<CustomerSuccess> customerSuccessCopy = customerSuccess.OrderBy(item => item.Score).ToList();
+            List<Customer> customersCopy = customers.OrderBy(item => item.Score).ToList();
 
-            foreach(var cs in csAvailable)
+            int idCsMostCostumer = 0, totalCustomersCsMostCustomer = 0, totalGeral = 0;
+
+            for (int i = 0; i < customerSuccessCopy.Count; i++)
             {
-                int totalCustomers = customers.RemoveAll(item => item.Score <= cs.Score);
+                if (customerSuccessAway.Contains(customerSuccessCopy[i].Id)) continue;
 
-                if (totalCustomers > csMostCostumers.TotalCustomers) csMostCostumers = new { IdCs = cs.Id, TotalCustomers = totalCustomers };
-                else if (totalCustomers == csMostCostumers.TotalCustomers) csMostCostumers = new { IdCs = 0, TotalCustomers = totalCustomers };
+                int totalCustomer = 0;
+                for (int j = totalGeral; j < customersCopy.Count() && customersCopy[j].Score <= customerSuccessCopy[i].Score; j++, totalGeral++, totalCustomer++) ;
+
+                if (totalCustomer > totalCustomersCsMostCustomer)
+                {
+                    totalCustomersCsMostCustomer = totalCustomer;
+                    idCsMostCostumer = customerSuccessCopy[i].Id;
+                }
+                else if (totalCustomer == totalCustomersCsMostCustomer)
+                {
+                    idCsMostCostumer = 0;
+                }
             }
 
-            return csMostCostumers.IdCs;
+            return idCsMostCostumer;
         }
     }
 }
