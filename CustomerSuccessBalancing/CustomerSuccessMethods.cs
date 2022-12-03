@@ -41,14 +41,16 @@ namespace CustomerSuccessBalancing
 
         public int CustomerSuccessBalancing(List<CustomerSuccess> customerSuccess, List<Customer> customers, List<int> customerSuccessAway)
         {
-            var unavailableCsHash = GenerateUnavailableCsHash(customerSuccessAway);
-            var parsedCs = GenerateParsedCs(customerSuccess, unavailableCsHash);
-            var csTotalCustomersHash = new Dictionary<int, int>();
+            Dictionary<int, bool> unavailableCsHash = GenerateUnavailableCsHash(customerSuccessAway);
+            List<CustomerSuccess> parsedCs = GenerateParsedCs(customerSuccess, unavailableCsHash);
+            Dictionary<int, int> csTotalCustomersHash = new Dictionary<int, int>();
 
             int topCsId = 0;
             bool isTie = false;
 
-            foreach (var customer in customers)
+            Customer[] customersCopy = customers.OrderBy(x => x.Score).ToArray();
+
+            foreach (Customer customer in customersCopy)
             {
                 var assignedCsId = FindAssignedCs(parsedCs, customer.Score);
 
@@ -65,7 +67,7 @@ namespace CustomerSuccessBalancing
                     {
                         isTie = true;
                     }
-                    else if(assignedCsTotalCustomers > topCsTotalCustomers)
+                    else if (assignedCsTotalCustomers > topCsTotalCustomers)
                     {
                         topCsId = assignedCsId.Value;
                         isTie = false;
@@ -73,6 +75,7 @@ namespace CustomerSuccessBalancing
 
                     csTotalCustomersHash[assignedCsId.Value] = assignedCsTotalCustomers;
                 }
+                else break;
             }
 
             if (isTie) return 0;
