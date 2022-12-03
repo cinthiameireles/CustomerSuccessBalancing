@@ -8,32 +8,76 @@ namespace CustomerSuccessBalancing
 {
     public class CustomerSuccessMethods
     {
-        public int CustomerSuccessBalancing(List<CustomerSuccess> customerSuccess, List<Customer> customers, List<int> customerSuccessAway)
+        private int? FindAssignedCs(List<CustomerSuccess> customerSuccess, int customerScore)
         {
-            var customerSuccessOrdered = customerSuccess.OrderBy(item => item.Score).ToArray();
-            var customersOrdered = customers.OrderBy(item => item.Score).ToArray();
+            int start = 0, end = customerSuccess.Count - 1;
+            CustomerSuccess assignedCs = null;
 
-            int idCsMostCostumers = 0, totalCustomersCsMostCustomers = 0, totalCustomersAnalyzed = 0;
-
-            for (int i = 0; i < customerSuccessOrdered.Count(); i++)
+            while (start <= end)
             {
-                if (customerSuccessAway.Contains(customerSuccessOrdered[i].Id)) continue;
+                int pivot = (int)Math.Floor((double)(start + end) / 2);
+                var pivotCs = customerSuccess[pivot];
 
-                int totalCustomer = 0;
-                for (int j = totalCustomersAnalyzed; j < customersOrdered.Count() && customersOrdered[j].Score <= customerSuccessOrdered[i].Score; j++, totalCustomersAnalyzed++, totalCustomer++) ;
+                int pivotScore = pivotCs.Score;
+                int? assignedCsScore = assignedCs?.Score;
 
-                if (totalCustomer > totalCustomersCsMostCustomers)
+                if (customerScore == pivotScore) return pivotCs.Id;
+
+                if (customerScore > pivotScore) start = pivot + 1;
+                else if (customerScore < pivotScore)
                 {
-                    totalCustomersCsMostCustomers = totalCustomer;
-                    idCsMostCostumers = customerSuccessOrdered[i].Id;
-                }
-                else if (totalCustomer == totalCustomersCsMostCustomers)
-                {
-                    idCsMostCostumers = 0;
+                    end = pivot - 1;
+
+                    if (assignedCsScore > pivotScore || assignedCsScore == null) assignedCs = pivotCs;
                 }
             }
 
-            return idCsMostCostumers;
+            return assignedCs?.Id;
+        }
+
+        private Dictionary<int, bool> GenerateUnavailableCsHash(List<int> customerSuccessAway) => customerSuccessAway.ToDictionary(x => x, x => true);
+
+        private List<CustomerSuccess> GenerateParsedCs(List<CustomerSuccess> customerSuccess, Dictionary<int, bool> unavailableCsHash) => customerSuccess.Where(x => !unavailableCsHash.ContainsKey(x.Id)).OrderBy(x => x.Score).ToList();
+
+        public int CustomerSuccessBalancing(List<CustomerSuccess> customerSuccess, List<Customer> customers, List<int> customerSuccessAway)
+        {
+            var unavailableCsHash = GenerateUnavailableCsHash(customerSuccessAway);
+            var parsedCs = GenerateParsedCs(customerSuccess, unavailableCsHash);
+            var csTotalCustomersHash = new Dictionary<int, int>();
+
+            int topCsId = 0;
+            bool isTie = false;
+
+            foreach (var customer in customers)
+            {
+                var assignedCsId = FindAssignedCs(parsedCs, customer.Score);
+
+                if (assignedCsId != null)
+                {
+                    int assignedCsTotalCustomers;
+                    csTotalCustomersHash.TryGetValue(assignedCsId.Value, out assignedCsTotalCustomers);
+                    assignedCsTotalCustomers++;
+
+                    int topCsTotalCustomers;
+                    csTotalCustomersHash.TryGetValue(topCsId, out topCsTotalCustomers);
+
+                    if (assignedCsTotalCustomers == topCsTotalCustomers)
+                    {
+                        isTie = true;
+                    }
+                    else if(assignedCsTotalCustomers > topCsTotalCustomers)
+                    {
+                        topCsId = assignedCsId.Value;
+                        isTie = false;
+                    }
+
+                    csTotalCustomersHash[assignedCsId.Value] = assignedCsTotalCustomers;
+                }
+            }
+
+            if (isTie) return 0;
+
+            return topCsId;
         }
     }
 }
