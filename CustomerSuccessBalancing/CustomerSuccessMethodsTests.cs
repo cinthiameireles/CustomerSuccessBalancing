@@ -138,28 +138,5 @@ namespace CustomerSuccessBalancing
             Assert.That(_csMethods.CustomerSuccessBalancing(css, customers, csAway), Is.EqualTo(3));
         }
 
-        [Test]
-        public void Scenario8_Extra()
-        {
-
-            List<CustomerSuccess> css = MapCustomerSuccess(Enumerable.Range(1, 999).ToArray());
-            List<Customer> customers = BuildSizeEntities(100000, 998);
-            List<int> csAway = Enumerable.Range(1, 499).ToList();
-
-            Assert.That(_csMethods.CustomerSuccessBalancing(css, customers, csAway), Is.EqualTo(998));
-        }
-
-        [Test]
-        public void Scenario9_Extra()
-        {
-
-            List<CustomerSuccess> css = MapCustomerSuccess(Enumerable.Range(1, 999).ToArray());
-            List<Customer> customers = BuildSizeEntities(100000, 998);
-            List<int> csAway = Enumerable.Range(500, 999).ToList();
-
-            Assert.That(_csMethods.CustomerSuccessBalancing(css, customers, csAway), Is.EqualTo(0));
-        }
-
-
     }
 }
