@@ -14,14 +14,15 @@ namespace CustomerSuccessBalancing
             var customersOrdered = customers.OrderBy(item => item.Score).ToArray();
 
             int idCsMostCostumers = 0, totalCustomersCsMostCustomers = 0, totalCustomersAnalyzed = 0;
-            int totalCustomers = customerSuccessOrdered.Count();
+            int totalCs = customerSuccessOrdered.Count();
+            int totalCostumers = customersOrdered.Count();
 
-            for (int i = 0; i < totalCustomers; i++)
+            for (int i = 0; i < totalCs; i++)
             {
                 if (customerSuccessAway.Contains(customerSuccessOrdered[i].Id)) continue;
 
                 int totalCustomersCurrentCs = 0;
-                for (int j = totalCustomersAnalyzed; j < customersOrdered.Count() && customersOrdered[j].Score <= customerSuccessOrdered[i].Score; j++, totalCustomersAnalyzed++, totalCustomersCurrentCs++) ;
+                for (int j = totalCustomersAnalyzed; j < totalCostumers && customersOrdered[j].Score <= customerSuccessOrdered[i].Score; j++, totalCustomersAnalyzed++, totalCustomersCurrentCs++) ;
 
                 if (totalCustomersCurrentCs > totalCustomersCsMostCustomers)
                 {
