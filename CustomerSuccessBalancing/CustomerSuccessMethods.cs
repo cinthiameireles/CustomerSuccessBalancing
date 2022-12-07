@@ -8,32 +8,52 @@ namespace CustomerSuccessBalancing
 {
     public class CustomerSuccessMethods
     {
-        public int CustomerSuccessBalancing(List<CustomerSuccess> customerSuccess, List<Customer> customers, List<int> customerSuccessAway)
+        public CustomerSuccess[] GenerateParsedManagers(CustomerSuccess[] managers, int[] unavailableManagers)
         {
-            var customerSuccessOrdered = customerSuccess.OrderBy(item => item.Score).ToArray();
-            var customersOrdered = customers.OrderBy(item => item.Score).ToArray();
+            var unavailableManagersHash = new Dictionary<int, bool>();
+            foreach (int id in unavailableManagers) unavailableManagersHash[id] = true;
 
-            int idCsMostCostumers = 0, totalCustomersCsMostCustomers = 0, totalCustomersAnalyzed = 0;
-
-            for (int i = 0; i < customerSuccessOrdered.Count(); i++)
-            {
-                if (customerSuccessAway.Contains(customerSuccessOrdered[i].Id)) continue;
-
-                int totalCustomer = 0;
-                for (int j = totalCustomersAnalyzed; j < customersOrdered.Count() && customersOrdered[j].Score <= customerSuccessOrdered[i].Score; j++, totalCustomersAnalyzed++, totalCustomer++) ;
-
-                if (totalCustomer > totalCustomersCsMostCustomers)
-                {
-                    totalCustomersCsMostCustomers = totalCustomer;
-                    idCsMostCostumers = customerSuccessOrdered[i].Id;
-                }
-                else if (totalCustomer == totalCustomersCsMostCustomers)
-                {
-                    idCsMostCostumers = 0;
-                }
-            }
-
-            return idCsMostCostumers;
+            return managers.Where(manager => !unavailableManagersHash.GetValueOrDefault(manager.Id)).OrderBy(manager => manager.Score).ToArray();
         }
+
+        const generateParsedCustomers = (customers, managers) =>
+        {
+            const maxScore = managers[managers.length - 1].score;
+
+            return customers
+                .filter((customer) => customer.score <= maxScore)
+                .sort((c1, c2) => c2.score < c1.score ? 1 : -1)
+        }
+
+        //const customerSuccessBalancing = (managers, customers, unavailableManagers) => {
+        //    const parsedManagers = generateParsedManagers(managers, unavailableManagers);
+        //    const parsedCustomers = generateParsedCustomers(customers, parsedManagers)
+
+        //  let topManagerId = 0;
+        //    let topManagerTotalCustomers = 0;
+        //    let customerIndex = 0;
+
+        //    for (const manager of parsedManagers) {
+        //        let totalCustomers = 0;
+
+        //        while (parsedCustomers[customerIndex]?.score <= manager.score)
+        //        {
+        //            totalCustomers++;
+        //            customerIndex++;
+        //        }
+
+        //        if (totalCustomers > topManagerTotalCustomers)
+        //        {
+        //            topManagerId = manager.id;
+        //            topManagerTotalCustomers = totalCustomers;
+        //        }
+        //        else if (totalCustomers === topManagerTotalCustomers)
+        //        {
+        //            topManagerId = 0;
+        //        }
+        //    }
+
+        //    return topManagerId;
+        //}
     }
 }
