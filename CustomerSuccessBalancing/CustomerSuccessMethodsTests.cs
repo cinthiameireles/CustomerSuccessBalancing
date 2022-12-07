@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -53,7 +54,7 @@ namespace CustomerSuccessBalancing
         }
 
         [Test]
-        public void Scenario1()
+        public void Scenario01()
         {
             List<CustomerSuccess> css = new List<CustomerSuccess>(4)
             {
@@ -77,7 +78,7 @@ namespace CustomerSuccessBalancing
         }
 
         [Test]
-        public void Scenario2()
+        public void Scenario02()
         {
             List<CustomerSuccess> css = MapCustomerSuccess(11, 21, 31, 3, 4, 5);
             List<Customer> customers = MapCustomers(10, 10, 10, 20, 20, 30, 30, 30, 20, 60);
@@ -88,7 +89,7 @@ namespace CustomerSuccessBalancing
 
         [Test]
         [Timeout(100)]
-        public void Scenario3()
+        public void Scenario03()
         {
 
             List<CustomerSuccess> css = MapCustomerSuccess(Enumerable.Range(1, 999).ToArray());
@@ -99,7 +100,7 @@ namespace CustomerSuccessBalancing
         }
 
         [Test]
-        public void Scenario4()
+        public void Scenario04()
         {
             List<CustomerSuccess> css = MapCustomerSuccess(1, 2, 3, 4, 5, 6);
             List<Customer> customers = MapCustomers(10, 10, 10, 20, 20, 30, 30, 30, 20, 60);
@@ -109,7 +110,7 @@ namespace CustomerSuccessBalancing
         }
 
         [Test]
-        public void Scenario5()
+        public void Scenario05()
         {
             List<CustomerSuccess> css = MapCustomerSuccess(100, 2, 3, 6, 4, 5);
             List<Customer> customers = MapCustomers(10, 10, 10, 20, 20, 30, 30, 30, 20, 60);
@@ -119,7 +120,7 @@ namespace CustomerSuccessBalancing
         }
 
         [Test]
-        public void Scenario6()
+        public void Scenario06()
         {
             List<CustomerSuccess> css = MapCustomerSuccess(100, 99, 88, 3, 4, 5);
             List<Customer> customers = MapCustomers(10, 10, 10, 20, 20, 30, 30, 30, 20, 60);
@@ -129,7 +130,7 @@ namespace CustomerSuccessBalancing
         }
 
         [Test]
-        public void Scenario7()
+        public void Scenario07()
         {
             List<CustomerSuccess> css = MapCustomerSuccess(100, 99, 88, 3, 4, 5);
             List<Customer> customers = MapCustomers(10, 10, 10, 20, 20, 30, 30, 30, 20, 60);
@@ -139,7 +140,7 @@ namespace CustomerSuccessBalancing
         }
 
         [Test]
-        public void Scenario8_Extra()
+        public void Scenario08_Extra()
         {
 
             List<CustomerSuccess> css = MapCustomerSuccess(Enumerable.Range(1, 999).ToArray());
@@ -150,7 +151,7 @@ namespace CustomerSuccessBalancing
         }
 
         [Test]
-        public void Scenario9_Extra()
+        public void Scenario09_Extra()
         {
 
             List<CustomerSuccess> css = MapCustomerSuccess(Enumerable.Range(1, 999).ToArray());
@@ -160,6 +161,26 @@ namespace CustomerSuccessBalancing
             Assert.That(_csMethods.CustomerSuccessBalancing(css, customers, csAway), Is.EqualTo(0));
         }
 
+        [Test]
+        [TestCase(15)]
+        public void Scenario10_Extra_Performance(int msMax)
+        {
+            List<CustomerSuccess> css = MapCustomerSuccess(Enumerable.Range(1, 999).ToArray());
+            List<Customer> customers = BuildSizeEntities(100000, 998);
+            List<int> csAway = new List<int>(1) { 999 };
 
+            int tries = 100;
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            for (int i = 0; i < tries; i++)
+            {
+                var x = _csMethods.CustomerSuccessBalancing(css, customers, csAway);
+            }
+            stopwatch.Stop();
+            long mediaMs = stopwatch.ElapsedMilliseconds / tries;
+
+            Console.WriteLine($"A média de tempo é {mediaMs}ms");
+
+            Assert.That(mediaMs, Is.LessThanOrEqualTo(msMax));
+        }
     }
 }
