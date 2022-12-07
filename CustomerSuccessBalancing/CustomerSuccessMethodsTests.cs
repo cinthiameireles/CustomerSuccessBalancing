@@ -99,6 +99,20 @@ namespace CustomerSuccessBalancing
             Assert.That(_csMethods.CustomerSuccessBalancing(css, customers, csAway), Is.EqualTo(998));
         }
 
+        //[Test]
+        //[TestCase(1000)]
+        //[TestCase(10000)]
+        //[TestCase(100000)]
+        //public void Scenario03A(int size)
+        //{
+
+        //    List<CustomerSuccess> css = MapCustomerSuccess(Enumerable.Range(1, size - 1).ToArray());
+        //    List<Customer> customers = BuildSizeEntities(size * 100, size - 2);
+        //    List<int> csAway = new List<int>(1) { size - 1 };
+
+        //    Assert.That(_csMethods.CustomerSuccessBalancing(css, customers, csAway), Is.EqualTo(size - 2));
+        //}
+
         [Test]
         public void Scenario04()
         {
@@ -139,6 +153,7 @@ namespace CustomerSuccessBalancing
             Assert.That(_csMethods.CustomerSuccessBalancing(css, customers, csAway), Is.EqualTo(3));
         }
 
+        /*
         [Test]
         public void Scenario08_Extra()
         {
@@ -182,5 +197,7 @@ namespace CustomerSuccessBalancing
 
             Assert.That(mediaMs, Is.LessThanOrEqualTo(msMax));
         }
+
+        */
     }
 }
