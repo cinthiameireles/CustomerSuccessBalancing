@@ -16,14 +16,14 @@ namespace CustomerSuccessBalancing
             return managers.Where(manager => !unavailableManagersHash.GetValueOrDefault(manager.Id)).OrderBy(manager => manager.Score).ToArray();
         }
 
-        const generateParsedCustomers = (customers, managers) =>
-        {
-            const maxScore = managers[managers.length - 1].score;
+        //const generateParsedCustomers = (customers, managers) =>
+        //{
+        //    const maxScore = managers[managers.length - 1].score;
 
-            return customers
-                .filter((customer) => customer.score <= maxScore)
-                .sort((c1, c2) => c2.score < c1.score ? 1 : -1)
-        }
+        //    return customers
+        //        .filter((customer) => customer.score <= maxScore)
+        //        .sort((c1, c2) => c2.score < c1.score ? 1 : -1)
+        //}
 
         //const customerSuccessBalancing = (managers, customers, unavailableManagers) => {
         //    const parsedManagers = generateParsedManagers(managers, unavailableManagers);
