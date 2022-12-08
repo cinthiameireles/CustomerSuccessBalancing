@@ -10,23 +10,20 @@ namespace CustomerSuccessBalancing
 {
     public class CustomerSuccessMethods
     {
-        private Dictionary<int, int> CreateDictionaryScoresCostumer(List<Customer> customers, int maxScore)
+        private int[] CreateArrayCostumersByScore(List<Customer> customers, int maxScore)
         {
-            Dictionary<int, int> totalCustomersByScore = new Dictionary<int, int>();
+            int[] totalCustomersByScore = new int[maxScore + 1];
 
             foreach (var customer in customers)
             {
                 if (customer.Score > maxScore) break;
 
-                var valorAnterior = totalCustomersByScore.GetValueOrDefault(customer.Score);
-                totalCustomersByScore[customer.Score] = valorAnterior + 1;
+                totalCustomersByScore[customer.Score]++;
             }
 
             for (int i = 1; i <= maxScore; i++)
             {
-                var iValue = totalCustomersByScore.GetValueOrDefault(i);
-                var beforeIValue = totalCustomersByScore.GetValueOrDefault(i-1);
-                totalCustomersByScore[i] = iValue + beforeIValue;
+                totalCustomersByScore[i] += totalCustomersByScore[i - 1];
             }
 
             return totalCustomersByScore;
@@ -51,7 +48,7 @@ namespace CustomerSuccessBalancing
             int csMaxScore = customerSuccessOrdered.Last().Score;
 
             var dictionaryCsAway = CreateDictionaryCsAway(customerSuccessAway);
-            var dictionaryScoresByCustomers = CreateDictionaryScoresCostumer(customers, csMaxScore);
+            var arrayCostumersByScore = CreateArrayCostumersByScore(customers, csMaxScore);
 
             int totalCustomersBefore = 0;
             int idCsMoreCustomers = 0, maxCustomers = 0;
@@ -59,8 +56,8 @@ namespace CustomerSuccessBalancing
             {
                 if (dictionaryCsAway.GetValueOrDefault(cs.Id)) continue;
 
-                int totalCustomersCs = dictionaryScoresByCustomers[cs.Score] - totalCustomersBefore;
-                totalCustomersBefore = dictionaryScoresByCustomers[cs.Score];
+                int totalCustomersCs = arrayCostumersByScore[cs.Score] - totalCustomersBefore;
+                totalCustomersBefore = arrayCostumersByScore[cs.Score];
 
                 if (totalCustomersCs > maxCustomers)
                 {
