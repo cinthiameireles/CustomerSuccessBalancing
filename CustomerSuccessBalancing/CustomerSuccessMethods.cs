@@ -8,7 +8,7 @@ namespace CustomerSuccessBalancing
 {
     public class CustomerSuccessMethods
     {
-        public CustomerSuccess[] GenerateParsedManagers(CustomerSuccess[] managers, int[] unavailableManagers)
+        private CustomerSuccess[] GenerateParsedManagers(List<CustomerSuccess> managers, List<int> unavailableManagers)
         {
             var unavailableManagersHash = new Dictionary<int, bool>();
             foreach (int id in unavailableManagers) unavailableManagersHash[id] = true;
@@ -16,44 +16,45 @@ namespace CustomerSuccessBalancing
             return managers.Where(manager => !unavailableManagersHash.GetValueOrDefault(manager.Id)).OrderBy(manager => manager.Score).ToArray();
         }
 
-        //const generateParsedCustomers = (customers, managers) =>
-        //{
-        //    const maxScore = managers[managers.length - 1].score;
+        private Customer[] GenerateParsedCustomers(List<Customer> customers, CustomerSuccess[] managers)
+        {
+            int maxScore = managers[managers.Count() - 1].Score;
 
-        //    return customers
-        //        .filter((customer) => customer.score <= maxScore)
-        //        .sort((c1, c2) => c2.score < c1.score ? 1 : -1)
-        //}
+            return customers.Where(customer => customer.Score <= maxScore).OrderBy(customer => customer.Score).ToArray();
+        }
 
-        //const customerSuccessBalancing = (managers, customers, unavailableManagers) => {
-        //    const parsedManagers = generateParsedManagers(managers, unavailableManagers);
-        //    const parsedCustomers = generateParsedCustomers(customers, parsedManagers)
+        public int CustomerSuccessBalancing(List<CustomerSuccess> managers, List<Customer> customers, List<int> unavailableManagers)
+        {
+            CustomerSuccess[] parsedManagers = GenerateParsedManagers(managers, unavailableManagers);
+            Customer[] parsedCustomers = GenerateParsedCustomers(customers, parsedManagers);
 
-        //  let topManagerId = 0;
-        //    let topManagerTotalCustomers = 0;
-        //    let customerIndex = 0;
+            var topManagerId = 0;
+            var topManagerTotalCustomers = 0;
+            var customerIndex = 0;
+            var maxCustomers = parsedCustomers.Count();
 
-        //    for (const manager of parsedManagers) {
-        //        let totalCustomers = 0;
+            foreach (var manager in parsedManagers)
+            {
+                var totalCustomers = 0;
 
-        //        while (parsedCustomers[customerIndex]?.score <= manager.score)
-        //        {
-        //            totalCustomers++;
-        //            customerIndex++;
-        //        }
+                while (customerIndex < maxCustomers && parsedCustomers[customerIndex].Score <= manager.Score)
+                {
+                    totalCustomers++;
+                    customerIndex++;
+                }
 
-        //        if (totalCustomers > topManagerTotalCustomers)
-        //        {
-        //            topManagerId = manager.id;
-        //            topManagerTotalCustomers = totalCustomers;
-        //        }
-        //        else if (totalCustomers === topManagerTotalCustomers)
-        //        {
-        //            topManagerId = 0;
-        //        }
-        //    }
+                if (totalCustomers > topManagerTotalCustomers)
+                {
+                    topManagerId = manager.Id;
+                    topManagerTotalCustomers = totalCustomers;
+                }
+                else if (totalCustomers == topManagerTotalCustomers)
+                {
+                    topManagerId = 0;
+                }
+            }
 
-        //    return topManagerId;
-        //}
+            return topManagerId;
+        }
     }
 }
