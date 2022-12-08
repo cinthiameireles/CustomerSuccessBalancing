@@ -10,7 +10,7 @@ namespace CustomerSuccessBalancing
 {
     public class CustomerSuccessMethods
     {
-        private int[] CreateArrayCostumersByScore(List<Customer> customers, int maxScore)
+        private int[] CreateArrayCostumersByScore(Customer[] customers, int maxScore)
         {
             int[] totalCustomersByScore = new int[maxScore + 1];
 
@@ -29,7 +29,7 @@ namespace CustomerSuccessBalancing
             return totalCustomersByScore;
         }
 
-        private Dictionary<int, bool> CreateDictionaryCsAway(List<int> customerSuccessAway)
+        private Dictionary<int, bool> CreateDictionaryCsAway(int[] customerSuccessAway)
         {
             Dictionary<int, bool> dictionaryCsAway = new Dictionary<int, bool>();
 
@@ -43,12 +43,12 @@ namespace CustomerSuccessBalancing
 
         public int CustomerSuccessBalancing(List<CustomerSuccess> customerSuccess, List<Customer> customers, List<int> customerSuccessAway)
         {
-            var customerSuccessOrdered = customerSuccess.OrderBy(item => item.Score).ToList();
+            var customerSuccessOrdered = customerSuccess.OrderBy(item => item.Score).ToArray();
 
             int csMaxScore = customerSuccessOrdered.Last().Score;
 
-            var dictionaryCsAway = CreateDictionaryCsAway(customerSuccessAway);
-            var arrayCostumersByScore = CreateArrayCostumersByScore(customers, csMaxScore);
+            var dictionaryCsAway = CreateDictionaryCsAway(customerSuccessAway.ToArray());
+            var arrayCostumersByScore = CreateArrayCostumersByScore(customers.ToArray(), csMaxScore);
 
             int totalCustomersBefore = 0;
             int idCsMoreCustomers = 0, maxCustomers = 0;
